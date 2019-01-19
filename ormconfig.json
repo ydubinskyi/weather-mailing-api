@@ -1,0 +1,11 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "root",
+  "password": "",
+  "database": "weather_mailer_db",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "logging": true,
+  "synchronize": true
+}
