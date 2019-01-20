@@ -4,12 +4,14 @@ import {
   CreateDateColumn,
   Column,
   BeforeInsert,
+  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 
 import { UserResponseObject } from './interfaces/user-ro.interface';
 import { UserRole } from './enums/user-role.enum';
+import { SubscriptionEntity } from 'src/subscription/subscription.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -34,6 +36,9 @@ export class UserEntity {
 
   @Column('text')
   password: string;
+
+  @OneToMany(type => SubscriptionEntity, subscription => subscription.user)
+  subscriptions: SubscriptionEntity[];
 
   @BeforeInsert()
   async hasPassword() {
