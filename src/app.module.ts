@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from './user/user.module';
 import { SubscriptionModule } from './subscription/subscription.module';
+import { AuthGuard } from './shared/auth.guard';
 
 @Module({
   imports: [
@@ -10,5 +11,6 @@ import { SubscriptionModule } from './subscription/subscription.module';
     UserModule,
     SubscriptionModule,
   ],
+  providers: [AuthGuard],
 })
 export class AppModule {}
