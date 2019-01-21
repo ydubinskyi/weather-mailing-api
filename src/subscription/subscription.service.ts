@@ -6,6 +6,7 @@ import { SubscriptionEntity } from './subscription.entity';
 import { SubscriptionDTO } from './dto/create-subscription.dto';
 import { UserEntity } from 'src/user/user.entity';
 import { SubscriptionResponseObject } from './interfaces/subscription-ro.interface';
+import { CityEntity } from 'src/weather/entities/city.entity';
 
 @Injectable()
 export class SubscriptionService {
@@ -14,11 +15,13 @@ export class SubscriptionService {
     private subscriptionRepository: Repository<SubscriptionEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(CityEntity)
+    private cityRepository: Repository<CityEntity>,
   ) {}
 
   async getAll() {
     const subscriptions = await this.subscriptionRepository.find({
-      relations: ['author'],
+      relations: ['author', 'city'],
     });
 
     return subscriptions.map(sub => sub.toResponseObject());
@@ -26,7 +29,7 @@ export class SubscriptionService {
 
   async getAllByUserId(userId: string) {
     const subscriptions = await this.subscriptionRepository.find({
-      relations: ['author'],
+      relations: ['author', 'city'],
       where: {
         author: {
           id: userId,
@@ -41,10 +44,12 @@ export class SubscriptionService {
     userId: string,
     data: SubscriptionDTO,
   ): Promise<SubscriptionResponseObject> {
-    const user = await this.userRepository.findOne(userId);
+    const author = await this.userRepository.findOne(userId);
+    const city = await this.cityRepository.findOne(data.city);
     const newSub = await this.subscriptionRepository.create({
       ...data,
-      author: user,
+      city,
+      author,
     });
     await this.subscriptionRepository.save(newSub);
 
@@ -54,7 +59,7 @@ export class SubscriptionService {
   async read(id: string, userId: string): Promise<SubscriptionResponseObject> {
     const sub = await this.subscriptionRepository.findOne({
       where: { id },
-      relations: ['author'],
+      relations: ['author', 'city'],
     });
 
     if (!sub) {
@@ -72,19 +77,25 @@ export class SubscriptionService {
   ): Promise<SubscriptionResponseObject> {
     let sub = await this.subscriptionRepository.findOne({
       where: { id },
-      relations: ['author'],
+      relations: ['author', 'city'],
     });
+    const city = await this.cityRepository.findOne(data.city);
 
     if (!sub) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
     this.ensureOwnership(sub, userId);
 
-    await this.subscriptionRepository.update(id, data);
+    const updateData = {
+      ...data,
+      city,
+    };
+
+    await this.subscriptionRepository.update(id, updateData);
 
     sub = await this.subscriptionRepository.findOne({
       where: { id },
-      relations: ['author'],
+      relations: ['author', 'city'],
     });
 
     return sub.toResponseObject();
@@ -96,7 +107,7 @@ export class SubscriptionService {
   ): Promise<SubscriptionResponseObject> {
     const sub = await this.subscriptionRepository.findOne({
       where: { id },
-      relations: ['author'],
+      relations: ['author', 'city'],
     });
 
     if (!sub) {

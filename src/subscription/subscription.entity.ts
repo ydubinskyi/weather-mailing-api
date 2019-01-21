@@ -7,6 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
+import { CityEntity } from 'src/weather/entities/city.entity';
 
 @Entity('subscriptions')
 export class SubscriptionEntity {
@@ -22,15 +23,15 @@ export class SubscriptionEntity {
   @Column('text')
   email: string;
 
-  @Column('text')
-  city: string;
-
   @ManyToOne(type => UserEntity, user => user.subscriptions)
   author: UserEntity;
 
-  toResponseObject() {
-    const { created, updated, email, city, author } = this;
+  @ManyToOne(type => CityEntity, city => city.id)
+  city: CityEntity;
 
-    return { created, updated, email, city, author: author.toResponseObject() };
+  toResponseObject() {
+    const { id, created, updated, email, city, author } = this;
+
+    return { id, created, updated, email, city: city.toResponseInterface(), author: author.toResponseObject() };
   }
 }

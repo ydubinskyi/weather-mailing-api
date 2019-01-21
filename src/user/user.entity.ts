@@ -37,7 +37,7 @@ export class UserEntity {
   @Column('text')
   password: string;
 
-  @OneToMany(type => SubscriptionEntity, subscription => subscription.user)
+  @OneToMany(type => SubscriptionEntity, subscription => subscription.author)
   subscriptions: SubscriptionEntity[];
 
   @BeforeInsert()
