@@ -32,6 +32,6 @@ export class SubscriptionEntity {
   toResponseObject() {
     const { id, created, updated, email, city, author } = this;
 
-    return { id, created, updated, email, city: city.toResponseInterface(), author: author.toResponseObject() };
+    return { id, created, updated, email, city: city.toResponseObject(), author: author.toResponseObject() };
   }
 }

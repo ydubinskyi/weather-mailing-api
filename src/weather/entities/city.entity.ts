@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index } from 'typeorm';
 import { CityResponseObject } from '../interfaces/city-ro.interface';
 
 @Entity('cities')
@@ -6,7 +6,8 @@ export class CityEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text')
+  @Index()
+  @Column()
   name: string;
 
   @Column('text')
@@ -18,9 +19,9 @@ export class CityEntity {
   @Column('float')
   lat: number;
 
-  toResponseInterface(): CityResponseObject {
-    const { id, name, country } = this;
+  toResponseObject(): CityResponseObject {
+    const { id, name, country, lon, lat } = this;
 
-    return { id, name, country };
+    return { id, name, country, lon, lat };
   }
 }

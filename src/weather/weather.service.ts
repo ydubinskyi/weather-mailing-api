@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { readFileSync } from 'fs';
 
 import { CityEntity } from './entities/city.entity';
+import { CityResponseObject } from './interfaces/city-ro.interface';
 
 @Injectable()
 export class WeatherService {
@@ -31,5 +32,20 @@ export class WeatherService {
     });
 
     return true;
+  }
+
+  async searchCities(searchString: string, limit: number = 10): Promise<CityResponseObject[]> {
+    const cities = await this.cityRepository.find({
+      where: {
+        name: Like(`%${searchString}%`),
+      },
+      take: limit,
+    });
+
+    if (cities) {
+      return cities.map(city => city.toResponseObject());
+    } else {
+      return [];
+    }
   }
 }
