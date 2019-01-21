@@ -17,4 +17,9 @@ export class WeatherController {
   searchCities(@Query('search') query: string) {
     return this.weatherService.searchCities(query);
   }
+
+  @Get('get-forecast')
+  testForecast() {
+    return this.weatherService.findOrCreateForecast('878676');
+  }
 }

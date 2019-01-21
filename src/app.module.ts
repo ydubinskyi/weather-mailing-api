@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { SubscriptionModule } from './subscription/subscription.module';
 import { AuthGuard } from './shared/auth.guard';
 import { WeatherModule } from './weather/weather.module';
+import { MailingModule } from './mailing/mailing.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { WeatherModule } from './weather/weather.module';
     UserModule,
     SubscriptionModule,
     WeatherModule,
+    MailingModule,
   ],
   providers: [AuthGuard],
 })
