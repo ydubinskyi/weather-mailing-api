@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SubscriptionEntity } from 'src/subscription/subscription.entity';
 import { Repository } from 'typeorm';
 import { WeatherService } from 'src/weather/weather.service';
+import { ForecastEntity } from 'src/weather/entities/forecast.entity';
 
 @Injectable()
 export class MailingService {
@@ -25,11 +26,11 @@ export class MailingService {
         sub.city.id,
       );
 
-      this.sendMail(sub.email, sub.author.name);
+      this.sendMail(sub.email, sub.author.name, forecast);
     }
   }
 
-  private sendMail(email: string, receiver: string) {
+  private sendMail(email: string, receiver: string, content: ForecastEntity) {
     // send mail to user
   }
 }
